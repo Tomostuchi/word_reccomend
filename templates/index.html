@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>質問フォーム</title>
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 30px;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+        .container {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            max-width: 500px;
+            width: 100%;
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .question-group {
+            margin-bottom: 20px;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 20px;
+        }
+        .question-group:last-child {
+            border-bottom: none;
+        }
+        .question-group p {
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #0056b3;
+        }
+        .choice {
+            margin-bottom: 10px;
+        }
+        label {
+            cursor: pointer;
+            margin-left: 8px;
+        }
+        select {
+            padding: 5px;
+            margin-left: 10px;
+        }
+        .submit-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+        /* エラーメッセージ用のスタイルを追加 */
+        .error-message {
+            color: #dc3545; /* 赤色 */
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none; /* 最初は隠しておく */
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>英単語推薦サイト</h2>
+        
+        <form id="surveyForm" action="/result" method="get">
+            <div class="question-group">
+                <p>Q1. あなたが単語帳に求める以下の要素に、1~6の優先順位をつけてください。</p>
+                <p style="font-size: 0.8em; color: #666;">※数字は重複しないように選んでください</p>
+    
+                <div class="choice">
+                    <label for="origin_rank">語源から学びたい</label>
+                    <select id="origin_rank" name="origin_rank" class="rank-select">
+                        <option value="" selected disabled>選択</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+                
+                <div class="choice">
+                    <label for="count_rank">収録されている単語数</label>
+                    <select id="count_rank" name="count_rank" class="rank-select">
+                        <option value="" selected disabled>選択</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+                
+                <div class="choice">
+                    <label for="article_rank">長文による練習を積みたい</label>
+                    <select id="article_rank" name="article_rank" class="rank-select">
+                        <option value="" selected disabled>選択</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+
+                <div class="choice">
+                    <label for="group_rank">類似語をまとめて覚えたい</label>
+                    <select id="group_rank" name="group_rank" class="rank-select">
+                        <option value="" selected disabled>選択</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+
+                <div class="choice">
+                    <label for="listening_rank">単語の発音を聴きながら行いたい</label>
+                    <select id="listening_rank" name="listening_rank" class="rank-select">
+                        <option value="" selected disabled>選択</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+
+                <div class="choice">
+                    <label for="idiom_rank">イディオムも一緒に覚えたい</label>
+                    <select id="idiom_rank" name="idiom_rank" class="rank-select">
+                        <option value="" selected disabled>選択</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <p>Q2. あなたの現状の語彙力に最も近いと思うものを選択してください</p>
+                <div class="choice">
+                    <input type="radio" id="q2_beginner" name="current_level" value="beginner">
+                    <label for="q2_beginner">中学英語レベル（基礎的な単語ならわかる）</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" id="q2_intermediate" name="current_level" value="intermediate">
+                    <label for="q2_intermediate">高校英語基礎レベル・英検3級レベル</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" id="q2_advanced" name="current_level" value="advanced">
+                    <label for="q2_advanced">高校英語中級レベル・英検準2級レベル・それ以上</label>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <p>Q3. あなたが目標にしている語彙レベルを選択してください</p>
+                <div class="choice">
+                    <input type="radio" id="q3_beginner" name="target_level" value="beginner">
+                    <label for="q3_beginner">英検凖2級・共通テスト得点率60%</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" id="q3_intermediate" name="target_level" value="intermediate">
+                    <label for="q3_intermediate">有名私立/国公立・英検2級・共通テスト得点率75%</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" id="q3_advanced" name="target_level" value="advanced">
+                    <label for="q3_advanced">難関大学・英検凖1級・共通テスト得点率90%</label>
+                </div>
+            </div>
+
+            <div id="error-msg" class="error-message"></div>
+
+            <input type="submit" value="回答して結果を見る" class="submit-button">
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('surveyForm').addEventListener('submit', function(event) {
+            // エラーメッセージエリアを取得
+            const errorArea = document.getElementById('error-msg');
+            errorArea.style.display = 'none'; // 一旦隠す
+            errorArea.innerHTML = '';         // 中身を空にする
+            
+            let errorText = "";
+
+            // --- 1. Q1の未入力チェック ---
+            // 'rank-select'というクラスがついたセレクトボックスを全て取得
+            const selects = document.querySelectorAll('.rank-select');
+            let selectedValues = [];
+            let q1Empty = false;
+
+            selects.forEach(function(select) {
+                if (select.value === "") {
+                    q1Empty = true;
+                } else {
+                    selectedValues.push(select.value);
+                }
+            });
+
+            if (q1Empty) {
+                errorText += "・Q1ですべての項目に順位をつけてください。<br>";
+            } else {
+                // --- 2. Q1の重複チェック（未入力がない場合のみ行う）---
+                // Setを使って重複を除いた数を数える
+                const uniqueValues = new Set(selectedValues);
+                if (uniqueValues.size !== selectedValues.length) {
+                    errorText += "・Q1の順位が重複しています。1〜6の数字をそれぞれ1回ずつ使ってください。<br>";
+                }
+            }
+
+            // --- 3. Q2の未入力チェック ---
+            const q2Checked = document.querySelector('input[name="current_level"]:checked');
+            if (!q2Checked) {
+                errorText += "・Q2（現状の語彙力）を選択してください。<br>";
+            }
+
+            // --- 4. Q3の未入力チェック ---
+            const q3Checked = document.querySelector('input[name="target_level"]:checked');
+            if (!q3Checked) {
+                errorText += "・Q3（目標レベル）を選択してください。<br>";
+            }
+
+            // --- エラーがある場合 ---
+            if (errorText !== "") {
+                // 送信をキャンセル（ページ遷移しない）
+                event.preventDefault();
+                
+                // エラーを表示
+                errorArea.innerHTML = errorText;
+                errorArea.style.display = 'block';
+                
+                // ページの一番上ではなく、エラー箇所が見えるように少しスクロールしても親切です
+                // errorArea.scrollIntoView({behavior: "smooth", block: "center"});
+            }
+            // エラーがなければ、そのまま送信されます
+        });
+    </script>
+
+</body>
+</html>
