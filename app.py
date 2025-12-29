@@ -4,9 +4,8 @@ from flask import Flask, render_template, request
 app = Flask(__name__)
 DB_NAME = "database.db"
 
-# -------------------------------------------------
 # データベース初期設定
-# -------------------------------------------------
+
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
@@ -39,20 +38,17 @@ def init_db():
 
 init_db()
 
-# -------------------------------------------------
-# ルーティング
-# -------------------------------------------------
+
+# 初期設定ルーティング
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# (前略... importなどはそのまま)
 
 @app.route('/result')
 def result():
-    # -----------------------------------------------------------
-    # 1. ユーザー入力の取得（省略：変更なし）
-    # -----------------------------------------------------------
+    # 1. ユーザー入力の取得
     try:
         user_ranks = {
             'origin': int(request.args.get('origin_rank', 6)),
@@ -71,9 +67,8 @@ def result():
     user_now = level_map.get(raw_current, 1)
     user_goal = level_map.get(raw_target, 3)
 
-    # -----------------------------------------------------------
-    # 2. 計算ロジック（省略：変更なし）
-    # -----------------------------------------------------------
+    # 2. 単語帳との類似度(マッチ度)を計算
+
     conn = sqlite3.connect(DB_NAME)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
@@ -86,10 +81,6 @@ def result():
     debug_log = []
 
     for book in books:
-        # ... (計算部分は変更なしなので省略します) ...
-        # ... 既存の計算コード ...
-        
-        # ※省略していますが、ここの計算ループは元のまま残してください
         score = 0
         score += user_ranks['origin'] * book['origin']
         score += user_ranks['count'] * book['count']
@@ -104,7 +95,7 @@ def result():
 
         status = ""
         if not level_match:
-            score += 1000
+            score += 40
             status = "(レベル不一致)"
 
         debug_log.append(f"{book['name']}: {score}点 {status}")
@@ -113,10 +104,9 @@ def result():
             min_score = score
             best_book_name = book['name']
     
-    # -----------------------------------------------------------
-    # 【追加】画像ファイル名の紐付け
-    # -----------------------------------------------------------
-    # ここに保存した実際のファイル名を書いてください
+    # 画像ファイル名の紐付け
+
+
     image_map = {
         'システム英単語': 'sisutan.jpg',
         'システム英単語Basic': 'sisutan_basic.jpg',
@@ -128,15 +118,14 @@ def result():
         'ユメタン': 'yumetan.jpg',
         'キクタン': 'kikutan.jpg'
     }
-    # テスト：どの本が選ばれても強制的に duo.jpg を出す
-    image_file = 'sokutan.jpg'
 
     # 辞書からファイル名を取得（もし登録がなければ no_image.png にする）
-    #image_file = image_map.get(best_book_name, 'no_image.png')
+    image_file = image_map.get(best_book_name, 'no_image.png')
 
+    # 入力情報の受け渡しとページ遷移
     return render_template('result.html', 
                            book=best_book_name, 
-                           book_image=image_file,  # ← 画像ファイル名をHTMLに渡す
+                           book_image=image_file,
                            user_level=f"現在:{raw_current} / 目標:{raw_target}",
                            log=debug_log)
 

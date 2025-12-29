@@ -68,15 +68,15 @@
         .submit-button:hover {
             background-color: #0056b3;
         }
-        /* エラーメッセージ用のスタイルを追加 */
+
         .error-message {
-            color: #dc3545; /* 赤色 */
+            color: #dc3545;
             background-color: #f8d7da;
             border: 1px solid #f5c6cb;
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 15px;
-            display: none; /* 最初は隠しておく */
+            display: none;
             font-size: 0.9em;
             font-weight: bold;
         }
@@ -216,14 +216,16 @@
     <script>
         document.getElementById('surveyForm').addEventListener('submit', function(event) {
             // エラーメッセージエリアを取得
+            // 初期化
             const errorArea = document.getElementById('error-msg');
-            errorArea.style.display = 'none'; // 一旦隠す
-            errorArea.innerHTML = '';         // 中身を空にする
+            errorArea.style.display = 'none';
+            errorArea.innerHTML = ''; 
             
             let errorText = "";
 
-            // --- 1. Q1の未入力チェック ---
-            // 'rank-select'というクラスがついたセレクトボックスを全て取得
+            // Q1の未入力チェック
+            // 1~6の重複を除き、数を数えて6このそうそが存在するかチェックするアルゴリズム
+            // 未入力と重複を同時に検出
             const selects = document.querySelectorAll('.rank-select');
             let selectedValues = [];
             let q1Empty = false;
@@ -239,39 +241,33 @@
             if (q1Empty) {
                 errorText += "・Q1ですべての項目に順位をつけてください。<br>";
             } else {
-                // --- 2. Q1の重複チェック（未入力がない場合のみ行う）---
-                // Setを使って重複を除いた数を数える
+                // Q1の重複チェック
                 const uniqueValues = new Set(selectedValues);
                 if (uniqueValues.size !== selectedValues.length) {
                     errorText += "・Q1の順位が重複しています。1〜6の数字をそれぞれ1回ずつ使ってください。<br>";
                 }
             }
 
-            // --- 3. Q2の未入力チェック ---
+            // Q2の入力チェック
             const q2Checked = document.querySelector('input[name="current_level"]:checked');
             if (!q2Checked) {
                 errorText += "・Q2（現状の語彙力）を選択してください。<br>";
             }
 
-            // --- 4. Q3の未入力チェック ---
+            // Q3の入力チェック
             const q3Checked = document.querySelector('input[name="target_level"]:checked');
             if (!q3Checked) {
                 errorText += "・Q3（目標レベル）を選択してください。<br>";
             }
 
-            // --- エラーがある場合 ---
+            // エラー処理
             if (errorText !== "") {
-                // 送信をキャンセル（ページ遷移しない）
-                event.preventDefault();
-                
-                // エラーを表示
+                event.preventDefault();   
+                // エラー内容を表示
                 errorArea.innerHTML = errorText;
                 errorArea.style.display = 'block';
                 
-                // ページの一番上ではなく、エラー箇所が見えるように少しスクロールしても親切です
-                // errorArea.scrollIntoView({behavior: "smooth", block: "center"});
             }
-            // エラーがなければ、そのまま送信されます
         });
     </script>
 
