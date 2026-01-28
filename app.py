@@ -4,7 +4,6 @@ from flask import Flask, render_template, request
 app = Flask(__name__)
 DB_NAME = "database.db"
 
-# データベース初期設定
 
 def init_db():
     conn = sqlite3.connect(DB_NAME)
@@ -20,7 +19,8 @@ def init_db():
     ''')
     cursor.execute('SELECT count(*) FROM book_scores')
     if cursor.fetchone()[0] == 0:
-        # データ登録（数値が小さいほどその要素が強い/優秀）
+        # 数値が小さいほどその要素が強い
+        # 語源・語数・長文・グループ化・リスニング・イディオム
         data = [
             ('システム英単語', 3, 2, 8, 3, 7, 7, 2, 3),
             ('システム英単語Basic', 4, 5, 5, 7, 6, 3, 1, 1),
@@ -38,9 +38,6 @@ def init_db():
 
 init_db()
 
-
-# 初期設定ルーティング
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -48,7 +45,6 @@ def index():
 
 @app.route('/result')
 def result():
-    # 1. ユーザー入力の取得
     try:
         user_ranks = {
             'origin': int(request.args.get('origin_rank', 6)),
@@ -67,7 +63,7 @@ def result():
     user_now = level_map.get(raw_current, 1)
     user_goal = level_map.get(raw_target, 3)
 
-    # 2. 単語帳との類似度(マッチ度)を計算
+    # 単語帳との類似度を計算
 
     conn = sqlite3.connect(DB_NAME)
     conn.row_factory = sqlite3.Row
@@ -103,8 +99,6 @@ def result():
         if score < min_score:
             min_score = score
             best_book_name = book['name']
-    
-    # 画像ファイル名の紐付け
 
 
     image_map = {
@@ -119,10 +113,8 @@ def result():
         'キクタン': 'kikutan.jpg'
     }
 
-    # 辞書からファイル名を取得（もし登録がなければ no_image.png にする）
     image_file = image_map.get(best_book_name, 'no_image.png')
 
-    # 入力情報の受け渡しとページ遷移
     return render_template('result.html', 
                            book=best_book_name, 
                            book_image=image_file,
